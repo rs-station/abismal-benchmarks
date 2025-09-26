@@ -1,3 +1,3 @@
 mkdir -p $ABISMALDIR/data/hewl/reflection_data
 cd $ABISMALDIR/data/hewl/reflection_data
-rsync -av rsync://data.sbgrid.org/10.15785/SBGRID/816 .
+wget https://github.com/rs-station/careless-examples/raw/refs/heads/main/hewl_ssad/unmerged.mtz
