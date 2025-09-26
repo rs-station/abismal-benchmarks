@@ -1,0 +1,56 @@
+data_manager {
+  miller_array {
+    file = "$MTZFILE"
+    labels {
+      name = "F(+),SIGF(+),F(-),SIGF(-),merged"
+      array_type = unknown *amplitude bool complex hendrickson_lattman \
+                   integer intensity nonsense
+    }
+    user_selected_labels = "F(+),SIGF(+),F(-),SIGF(-),merged"
+  }
+  miller_array {
+    file = "$ABISMALDIR/data/cxidb_62/reference_data/r-free-flags.mtz"
+    labels {
+      name = "R-free-flags"
+      array_type = unknown amplitude bool complex hendrickson_lattman \
+                   *integer intensity nonsense
+    }
+    user_selected_labels = "R-free-flags"
+  }
+  fmodel {
+    xray_data {
+      outliers_rejection = False
+      french_wilson_scale = False
+    }
+  }
+  default_miller_array = "$MTZFILE"
+  model {
+    file = "$ABISMALDIR/data/cxidb_62/reference_data/5xfd.pdb"
+  }
+  default_model = "$ABISMALDIR/data/cxidb_62/reference_data/5xfd.pdb"
+}
+refinement {
+  crystal_symmetry {
+    unit_cell = 105.795 105.795 75.46 90 90 120
+    space_group = P 65
+  }
+  refine {
+    strategy = individual_sites individual_sites_real_space *rigid_body \
+               *individual_adp group_adp tls occupancies group_anomalous den
+  }
+  main {
+    number_of_macro_cycles = 5
+  }
+  modify_start_model {
+    modify {
+      adp {
+        atom_selection = """All"""
+        set_b_iso = 20.0
+      }
+    }
+  }
+}
+output {
+  prefix = """refine"""
+  serial = 1
+}
