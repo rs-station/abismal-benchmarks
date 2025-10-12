@@ -7,3 +7,5 @@ Scripts for abismal benchmarking and development of ABISMAL.
  3) Enter the benchmarks directory `cd abismal-benchmarks`
  4) Modify the `setup.sh` script to source the right files to get the dependencies into your path. 
  5) Download the source dataset. First `source setup.sh` then run `download_examples`.
+ 6) Modify the SLURM preamble at the top of `benchmarks/job.sh`
+ 7) Run the benchmarks by executing `./submit_jobs.sh` from the `benchmarks` directory
