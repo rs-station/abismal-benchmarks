@@ -1,8 +1,8 @@
 BENCHMARKNAME=cxidb_81
-INPUTS=(`ls $ABISMALDIR/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/*/*/intermediates/*_reintegrated_*.{json,pickle}`)
+INPUTS=(`ls $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/*/*/intermediates/*_reintegrated_*.{json,pickle}`)
 
 EFFS=(
-    $ABISMALDIR/data/cxidb_81/reference_data/refine.eff
+    $ABISMAL_BENCHMARKS/data/cxidb_81/reference_data/refine.eff
 )
 
 # Dataset specific params

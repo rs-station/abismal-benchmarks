@@ -9,7 +9,7 @@ data_manager {
     user_selected_labels = "F(+),SIGF(+),F(-),SIGF(-),merged"
   }
   miller_array {
-    file = "$ABISMALDIR/data/hewl/reference_data/r-free-flags.mtz"
+    file = "$ABISMAL_BENCHMARKS/data/hewl/reference_data/r-free-flags.mtz"
     labels {
       name = "R-free-flags"
       array_type = unknown amplitude bool complex hendrickson_lattman \
@@ -25,9 +25,9 @@ data_manager {
   }
   default_miller_array = "$MTZFILE"
   model {
-    file = "$ABISMALDIR/data/hewl/reference_data/RTSAD_HEWL_refine_25.pdb"
+    file = "$ABISMAL_BENCHMARKS/data/hewl/reference_data/RTSAD_HEWL_refine_25.pdb"
   }
-  default_model = "$ABISMALDIR/data/hewl/reference_data/RTSAD_HEWL_refine_25.pdb"
+  default_model = "$ABISMAL_BENCHMARKS/data/hewl/reference_data/RTSAD_HEWL_refine_25.pdb"
 }
 refinement {
   crystal_symmetry {

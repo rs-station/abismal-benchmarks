@@ -1,11 +1,11 @@
 BENCHMARKNAME=cxidb_62
 INPUTS=(
-    $ABISMALDIR/data/cxidb_62/reflection_data/all-amb.stream
+    $ABISMAL_BENCHMARKS/data/cxidb_62/reflection_data/all-amb.stream
 )
-REFERENCE_MTZ=$ABISMALDIR/data/cxidb_62/reference_data/5xfd_phases.mtz
+REFERENCE_MTZ=$ABISMAL_BENCHMARKS/data/cxidb_62/reference_data/5xfd_phases.mtz
 
 EFFS=(
-    $ABISMALDIR/data/cxidb_62/reference_data/refine.eff
+    $ABISMAL_BENCHMARKS/data/cxidb_62/reference_data/refine.eff
 )
 
 # Dataset specific params

@@ -6,15 +6,15 @@ source ~/tools/abismal/setup.sh
 
 # Handle ./setup.sh and source setup.sh
 [[ $0 != $BASH_SOURCE ]] && 
-    ABISMALDIR=`dirname $BASH_SOURCE` ||
-    ABISMALDIR=`dirname $0` 
+    ABISMAL_BENCHMARKS=`dirname $BASH_SOURCE` ||
+    ABISMAL_BENCHMARKS=`dirname $0` 
 
-export ABISMALDIR=`readlink -f $ABISMALDIR`
+export ABISMAL_BENCHMARKS=`readlink -f $ABISMAL_BENCHMARKS`
 echo "setting..." 
-echo "    ABISMALDIR=$ABISMALDIR"
+echo "    ABISMAL_BENCHMARKS=$ABISMAL_BENCHMARKS"
 
 download_examples() {
-    for script_file in $ABISMALDIR/data/*/download.sh;do
+    for script_file in $ABISMAL_BENCHMARKS/data/*/download.sh;do
         source $script_file
     done
 }

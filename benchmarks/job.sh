@@ -68,7 +68,7 @@ CCHALF_PARAMS=(
 )
 
 #Find all available benchmark config files
-ALLCONFIG=(`ls $ABISMALDIR/benchmarks/config`)
+ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config`)
 echo "Listing available configs..."
 for conf in ${ALLCONFIG[@]};do
     echo " - $conf"
@@ -90,11 +90,11 @@ echo " - $BENCHMARKCONFIG"
 # - MULTI_WILSON_PARAMS (optional overrides for the MULTI_WILSON_PARAMS)
 # Note that if MULTI_WILSON_PARAMS isn't specified in the config file,
 # the multi-wilson prior will be used 
-source $ABISMALDIR/benchmarks/config/$BENCHMARKCONFIG
+source $ABISMAL_BENCHMARKS/benchmarks/config/$BENCHMARKCONFIG
 
 nvidia-smi
 
-OUTDIR=$ABISMALDIR/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
+OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
 
 # Join EFFS with comma
 SAVEIFS="$IFS"

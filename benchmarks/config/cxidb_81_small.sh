@@ -1,11 +1,11 @@
 BENCHMARKNAME=cxidb_81_small
 INPUTS=(
-    $ABISMALDIR/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/r0011/combine_experiments_t016/intermediates/t016_rg013_chunk000_reintegrated_experiments.json
-    $ABISMALDIR/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/r0011/combine_experiments_t016/intermediates/t016_rg013_chunk000_reintegrated_reflections.pickle
+    $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/r0011/combine_experiments_t016/intermediates/t016_rg013_chunk000_reintegrated_experiments.json
+    $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/r0011/combine_experiments_t016/intermediates/t016_rg013_chunk000_reintegrated_reflections.pickle
 )
 
 EFFS=(
-    $ABISMALDIR/data/cxidb_81/reference_data/refine.eff
+    $ABISMAL_BENCHMARKS/data/cxidb_81/reference_data/refine.eff
 )
 
 # Dataset specific params
