@@ -1,10 +1,10 @@
 BENCHMARKNAME=hewl
 INPUTS=(
-    $ABISMALDIR/data/hewl/reflection_data/unmerged.mtz
+    $ABISMAL_BENCHMARKS/data/hewl/reflection_data/unmerged.mtz
 )
 
 EFFS=(
-    $ABISMALDIR/data/hewl/reference_data/refine.eff
+    $ABISMAL_BENCHMARKS/data/hewl/reference_data/refine.eff
 )
 
 # Dataset specific params

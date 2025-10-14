@@ -1,10 +1,10 @@
 BENCHMARKNAME=cxidb_61
 INPUTS=(
-    $ABISMALDIR/data/cxidb_61/reflection_data/all.stream
+    $ABISMAL_BENCHMARKS/data/cxidb_61/reflection_data/all.stream
 )
 
 EFFS=(
-    $ABISMALDIR/data/cxidb_61/reference_data/refine.eff
+    $ABISMAL_BENCHMARKS/data/cxidb_61/reference_data/refine.eff
 )
 
 # Dataset specific params
