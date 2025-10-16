@@ -1,4 +1,6 @@
 load_phenix refine_001.mtz, refine_001.pdb, carve=2.0
+hide volume, fofc_p
+hide volume, fofc_m
 show spheres
 
 set_view (\
