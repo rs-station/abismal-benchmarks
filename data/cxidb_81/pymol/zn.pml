@@ -15,4 +15,4 @@ hide volume, fofc_p
 hide volume, fofc_m
 
 draw 4000, 3000, antialias=2
-save thermolysin.png
+save zn.png
