@@ -67,21 +67,8 @@ CCHALF_PARAMS=(
     --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
 )
 
-#Find all available benchmark config files
-ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config`)
-echo "Listing available configs..."
-for conf in ${ALLCONFIG[@]};do
-    echo " - $conf"
-done
-
-#Select one based on the job array task id
-BENCHMARKCONFIG=${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
-echo "Selected config .."
-echo " - $BENCHMARKCONFIG"
-
-
 ###################################################################
-# benchmarkconfig sets the important parameters for each benchmark
+# BENCHMARKCONFIG sets the important parameters for each benchmark
 # by setting the following shell variables
 # - INPUTS (a bash array of files)
 # - EFFS (a bash array of file)
@@ -90,7 +77,27 @@ echo " - $BENCHMARKCONFIG"
 # - MULTI_WILSON_PARAMS (optional overrides for the MULTI_WILSON_PARAMS)
 # Note that if MULTI_WILSON_PARAMS isn't specified in the config file,
 # the multi-wilson prior will be used 
-source $ABISMAL_BENCHMARKS/benchmarks/config/$BENCHMARKCONFIG
+if [[ "$#" -gt 0 ]]; then
+    BENCHMARKCONFIG=$1
+    source $BENCHMARKCONFIG
+elif [ -z "$SLURM_ARRAY_TASK_ID" ]; then 
+    #Find all available benchmark config files
+    ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config`)
+    echo "Listing available configs..."
+    for conf in ${ALLCONFIG[@]};do
+        echo " - $conf"
+    done
+
+    #Select one based on the job array task id
+    BENCHMARKCONFIG=${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
+    source $ABISMAL_BENCHMARKS/benchmarks/config/$BENCHMARKCONFIG
+else
+    echo "Failed to determine config file location, exitting..."
+    exit
+fi
+
+echo "Selected config .."
+echo " - $BENCHMARKCONFIG"
 
 nvidia-smi
 
