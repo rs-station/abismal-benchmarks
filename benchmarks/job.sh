@@ -1,14 +1,12 @@
 #!/bin/bash
+#SBATCH --partition=ampere
+#SBATCH --account=lcls:prjlumine22
 #SBATCH -N 1
-#SBATCH -C gpu
+#SBATCH -c 16
 #SBATCH -G 1
-#SBATCH -c 16 
-#SBATCH --mem 96G
-#SBATCH -q preempt
-#SBATCH -J abismal
-#SBATCH -t 0-06:00
-#SBATCH -A lcls_g
-#SBATCH -o ../log/slurm_%A_%a.out
+#SBATCH --mem=96G
+#SBATCH -t 0-12:00
+#SBATCH -o log/slurm_%A_%a.out
 
 
 #Set up conda env
@@ -78,15 +76,18 @@ CCHALF_PARAMS=(
 # Note that if MULTI_WILSON_PARAMS isn't specified in the config file,
 # the multi-wilson prior will be used 
 if [[ "$#" -gt 0 ]]; then
+    echo "Loading user supplied config..."
     BENCHMARKCONFIG=$1
     source $BENCHMARKCONFIG
-elif [ -z "$SLURM_ARRAY_TASK_ID" ]; then 
+elif [ -n ${SLURM_ARRAY_TASK_ID} ]; then
     #Find all available benchmark config files
     ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config`)
     echo "Listing available configs..."
     for conf in ${ALLCONFIG[@]};do
         echo " - $conf"
     done
+
+    echo "Choosing config from job array task ID..."
 
     #Select one based on the job array task id
     BENCHMARKCONFIG=${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
