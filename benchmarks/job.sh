@@ -6,7 +6,7 @@
 #SBATCH -G 1
 #SBATCH --mem=96G
 #SBATCH -t 0-12:00
-#SBATCH -o log/slurm_%A_%a.out
+#SBATCH -o ../log/slurm_%A_%a.out
 
 
 #Set up conda env
