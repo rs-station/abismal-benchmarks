@@ -48,6 +48,7 @@ BASE_PARAMS=(
   --learning-rate=1e-3
   --beta-1=0.9
   --beta-2=0.999
+  --run-eagerly
 )
 
 ################################################################################
@@ -78,7 +79,6 @@ CCHALF_PARAMS=(
 if [[ "$#" -gt 0 ]]; then
     echo "Loading user supplied config..."
     BENCHMARKCONFIG=$1
-    source $BENCHMARKCONFIG
 elif [ -n ${SLURM_ARRAY_TASK_ID} ]; then
     #Find all available benchmark config files
     ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config`)
@@ -90,28 +90,35 @@ elif [ -n ${SLURM_ARRAY_TASK_ID} ]; then
     echo "Choosing config from job array task ID..."
 
     #Select one based on the job array task id
-    BENCHMARKCONFIG=${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
-    source $ABISMAL_BENCHMARKS/benchmarks/config/$BENCHMARKCONFIG
+    BENCHMARKCONFIG=$ABISMAL_BENCHMARKS/benchmarks/config/${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
 else
     echo "Failed to determine config file location, exitting..."
     exit
 fi
 
+# Allow BENCHMARKCONFIG to overload OUTDIR
+OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
+
 echo "Selected config .."
 echo " - $BENCHMARKCONFIG"
+source $BENCHMARKCONFIG
 
 nvidia-smi
 
-OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
-
-# Join EFFS with comma
-SAVEIFS="$IFS"
-IFS=","
-EFFS="${EFFS[*]}"
-IFS="$SAVEIFS"
-echo $OUTDIR
+if [[ -v EFFS ]]; then
+    # Join EFFS with comma
+    SAVEIFS="$IFS"
+    IFS=","
+    EFFS="${EFFS[*]}"
+    IFS="$SAVEIFS"
+    echo "Adding PHENIX configs from"
+    echo " - $EFFS"
+    EXPERIMENT_PARAMS+=( --eff-files $EFFS )
+fi
 
 # Prepare output dir
+echo "Output will be written to..."
+echo "- $OUTDIR"
 mkdir -p $OUTDIR
 cp $0 $OUTDIR/merge.sh
 
@@ -134,10 +141,13 @@ abismal  \
     "${BASE_PARAMS[@]}" \
     "${EXPERIMENT_PARAMS[@]}" \
     "${MULTI_WILSON_PARAMS[@]}" \
-    --eff-files $EFFS \
     -o $OUTDIR \
     ${INPUTS[@]} 
 
+
+echo "################################################################################"
+echo "# Training ended... starting CChalf calculation"
+echo "################################################################################"
 cd $OUTDIR
 checkpoint_file=`ls -t epoch_*.keras | head -1`
 abismal.cchalf \
