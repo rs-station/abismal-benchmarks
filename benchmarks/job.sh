@@ -15,7 +15,7 @@ source ../setup.sh
 #0 - silent
 #1 - progress bar
 #2 - one line per epoch
-KERAS_VERBOSITY=2 
+KERAS_VERBOSITY=2
 num_epochs=30
 
 ################################################################################
@@ -40,7 +40,7 @@ BASE_PARAMS=(
   --d-model=256
   --layers=5
   --test-fraction=0.1
-  --num-cpus=10
+  --num-cpus=1
   --phenix-frequency=1
   --epsilon=1e-12
   --adam-epsilon=1e-7
@@ -48,7 +48,6 @@ BASE_PARAMS=(
   --learning-rate=1e-3
   --beta-1=0.9
   --beta-2=0.999
-  --run-eagerly
 )
 
 ################################################################################
