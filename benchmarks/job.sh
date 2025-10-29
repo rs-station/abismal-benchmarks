@@ -95,12 +95,16 @@ else
     exit
 fi
 
-# Allow BENCHMARKCONFIG to overload OUTDIR
-OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
 
 echo "Selected config .."
 echo " - $BENCHMARKCONFIG"
 source $BENCHMARKCONFIG
+
+# Allow BENCHMARKCONFIG to overload OUTDIR
+if [[ -z $OUTDIR ]]; then
+    echo "OUTDIR is unset, using default..."
+    OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
+fi
 
 nvidia-smi
 
