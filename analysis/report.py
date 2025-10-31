@@ -1,10 +1,12 @@
 import reciprocalspaceship as rs
+import gemmi
 from pylab import *
 import seaborn as sns
 import pandas as pd
 from os.path import exists
 from glob import glob
 from os import listdir
+
 
 
 def plot_history(csv_file, keys=None): 
@@ -18,16 +20,15 @@ def plot_history(csv_file, keys=None):
         keys = keys + val_keys 
     if 'Epoch' not in keys: 
         keys.append('Epoch') 
-    
+
     #Filter by keys 
     df = df[keys]  
-    
+
     #Make data 'tidy' for seaborn 
     data = df.melt("Epoch") 
     data['Set'] = np.array(['Train', 'Test'])[data['variable'].str.startswith('val_').to_numpy('int')] 
     data['variable'] = data['variable'].str.removeprefix('val_') 
-    
-    
+
     sns.lineplot( 
         data, 
         x='Epoch', 
@@ -41,7 +42,8 @@ def plot_history(csv_file, keys=None):
 
 
 class BenchmarkReport():
-    def __init__(self, results_dir, steps_per_epoch=1_000):
+    def __init__(self, results_dir, steps_per_epoch=1_000, cchalf_bins=12):
+        self.cchalf_bins = cchalf_bins
         self.cchalf_data = None
         self.results_dir = results_dir
         self.steps_per_epoch = steps_per_epoch
@@ -109,16 +111,12 @@ class BenchmarkReport():
             return rs.utils.weighted_pearsonr(x, y, w)
 
 
-        def make_halves_cchalf(mtz, bins=10):
+        def make_halves_cchalf(mtz, op='x,y,z', bins=10):
             """Construct half-datasets for computing CChalf"""
         
             half1 = mtz.loc[mtz.half == 0].copy()
             half2 = mtz.loc[mtz.half == 1].copy()
-        
-            # Support anomalous
-            if "F(+)" in half1.columns:
-                half1 = half1.stack_anomalous()
-                half2 = half2.stack_anomalous()
+            half2 = half2.apply_symop(op).hkl_to_asu(anomalous=True)
         
             out = half1[["F", "SigF", "repeat"]].merge(
                 half2[["F", "SigF", "repeat"]], on=["H", "K", "L", "repeat"], suffixes=("1", "2")
@@ -126,17 +124,26 @@ class BenchmarkReport():
             return out
 
         xval_file = f"{self.results_dir}/abismal_xval.mtz"
+        self.cchalf_data = None
         if exists(xval_file):
             ds = rs.read_mtz(f"{self.results_dir}/abismal_xval.mtz")
-            ds = make_halves_cchalf(ds).compute_dHKL()
-            ds['bin'],edges = rs.utils.bin_by_percentile(ds.dHKL, ascending=False)
-            labels = [f"{e1:0.2f} - {e2:0.2f}" for e1,e2 in zip(edges[:-1], edges[1:])]
-    
-            self.cchalf_data = pd.DataFrame({
-                'Labels' : ['Overall'] + labels,
-                'CChalf' : [pearson_ccfunc(ds)] + ds.groupby('bin').apply(pearson_ccfunc, include_groups=False).to_list(),
-                'wCChalf' : [weighted_pearson_ccfunc(ds)] + ds.groupby('bin').apply(weighted_pearson_ccfunc, include_groups=False).to_list(),
-            })
+            ops = [gemmi.Op('x,y,z')]
+            ops.extend(gemmi.find_twin_laws(ds.cell, ds.spacegroup, 1e-3, False))
+            for op in ops:
+                hds = make_halves_cchalf(ds, op=op, bins=self.cchalf_bins).compute_dHKL()
+                hds['bin'],edges = rs.utils.bin_by_percentile(hds.dHKL, ascending=False)
+                labels = [f"{e1:0.2f} - {e2:0.2f}" for e1,e2 in zip(edges[:-1], edges[1:])]
+        
+                cchalf_data = pd.DataFrame({
+                    'Labels' : ['Overall'] + labels,
+                    'CChalf' : [pearson_ccfunc(hds)] + hds.groupby('bin').apply(pearson_ccfunc, include_groups=False).to_list(),
+                    'wCChalf' : [weighted_pearson_ccfunc(hds)] + hds.groupby('bin').apply(weighted_pearson_ccfunc, include_groups=False).to_list(),
+                })
+                if self.cchalf_data is None:
+                    self.cchalf_data = cchalf_data
+                else:
+                    self.cchalf_data = np.maximum(cchalf_data, self.cchalf_data)
+
             summary['CChalf'] = self.cchalf_data.iloc[0]['CChalf']
             summary['wCChalf'] = self.cchalf_data.iloc[0]['wCChalf']
     
