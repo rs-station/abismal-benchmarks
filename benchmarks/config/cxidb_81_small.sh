@@ -12,6 +12,7 @@ EFFS=(
 EXPERIMENT_PARAMS=(
     --anomalous
     --dmin 1.8
+    --shuffle-buffer-size=10_000
 )
 
 # Disable MW Prior
