@@ -16,7 +16,7 @@ source ../setup.sh
 #1 - progress bar
 #2 - one line per epoch
 KERAS_VERBOSITY=2
-num_epochs=30
+num_epochs=100
 
 ################################################################################
 # Base parameters for all tests
@@ -30,11 +30,11 @@ BASE_PARAMS=(
   --posterior-distribution=foldednormal
   --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
   --studentt-dof=32
-  --scale-posterior-bijector=softplus
+  --scale-posterior-bijector=exp
   --scale-posterior-distribution=foldednormal
   --scale-prior-distribution=exponential
-  --activation=relu
-  --kl-weight=1e0
+  --activation=leaky_relu
+  --kl-weight=1e-3
   --scale-kl-weight=1e0
   --batch-size=100
   --d-model=256
