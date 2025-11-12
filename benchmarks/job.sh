@@ -16,7 +16,7 @@ source ../setup.sh
 #1 - progress bar
 #2 - one line per epoch
 KERAS_VERBOSITY=2
-num_epochs=100
+num_epochs=30
 
 ################################################################################
 # Base parameters for all tests
