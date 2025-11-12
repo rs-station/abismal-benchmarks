@@ -21,21 +21,21 @@ num_epochs=100
 ################################################################################
 # Base parameters for all tests
 BASE_PARAMS=(
-  --normalizer=rms
-  --optimizer=LazyAdam
+  --normalizer=activation
+  --optimizer=wadam
   --mc-samples=32
   --init-scale=0.01
   --prior-distribution=wilson
   --posterior-type=structure_factor
   --posterior-distribution=foldednormal
   --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
-  --studentt-dof=32
+  #--studentt-dof=32
   --scale-posterior-bijector=exp
-  --scale-posterior-distribution=foldednormal
-  --scale-prior-distribution=exponential
-  --activation=leaky_relu
+  --scale-posterior-distribution=normal
+  --scale-prior-distribution=cauchy
+  --activation=swish
   --kl-weight=1e-3
-  --scale-kl-weight=1e0
+  --scale-kl-weight=1e1
   --batch-size=100
   --d-model=256
   --layers=5
@@ -47,7 +47,7 @@ BASE_PARAMS=(
   --epochs=$num_epochs
   --learning-rate=1e-3
   --beta-1=0.9
-  --beta-2=0.999
+  --beta-2=0.9
 )
 
 ################################################################################
