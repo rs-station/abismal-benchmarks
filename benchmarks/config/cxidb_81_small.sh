@@ -12,17 +12,9 @@ EFFS=(
 EXPERIMENT_PARAMS=(
     --anomalous
     --dmin 1.8
-    --shuffle-buffer-size=10_000
+    --steps-per-epoch=1_000
 )
 
 # Disable MW Prior
 MULTI_WILSON_PARAMS=()
 
-steps_per_epoch=1000
-#Add steps per epoch for small experiments
-EXPERIMENT_PARAMS+=(
-    --steps-per-epoch=$steps_per_epoch
-)
-CCHALF_PARAMS+=(
-    --steps-per-epoch=$steps_per_epoch
-)
