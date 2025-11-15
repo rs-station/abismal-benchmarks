@@ -13,6 +13,7 @@ EXPERIMENT_PARAMS=(
     --dmin 1.4
     --cell 53.747 71.215 91.107 90.00 90.00 90.00
     --space-group "P 2 21 21"
+    --steps-per-epoch=1_000
 )
 
 # Disable MW Prior
