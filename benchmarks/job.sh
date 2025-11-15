@@ -21,24 +21,24 @@ num_epochs=30
 ################################################################################
 # Base parameters for all tests
 BASE_PARAMS=(
-  --normalizer=activation
+  --normalizer=rms
   --optimizer=wadam
   --mc-samples=32
-  --init-scale=0.01
-  --prior-distribution=wilson
+  --init-scale=1.0
+  --prior-distribution=halfnormal
   --posterior-type=structure_factor
   --posterior-distribution=foldednormal
   --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
-  #--studentt-dof=32
-  --scale-posterior-bijector=exp
+  --shuffle-buffer=10_000
+  --scale-posterior-bijector=softplus
   --scale-posterior-distribution=normal
   --scale-prior-distribution=cauchy
   --activation=swish
-  --kl-weight=1e-3
-  --scale-kl-weight=1e1
+  --kl-weight=1e0
+  --scale-kl-weight=1e0
   --batch-size=100
-  --d-model=256
-  --layers=5
+  --d-model=32
+  --layers=20
   --test-fraction=0.1
   --num-cpus=10
   --phenix-frequency=1
@@ -61,7 +61,6 @@ MULTI_WILSON_PARAMS=(
 ################################################################################
 # Parameters governing post-training crossvalidation run 
 CCHALF_PARAMS=(
-    --epochs=$num_epochs
     --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
 )
 
@@ -106,6 +105,8 @@ if [[ -z $OUTDIR ]]; then
     OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
 fi
 
+echo "Time: $(date)"
+echo "Running on node: $HOSTNAME"
 nvidia-smi
 
 if [[ -v EFFS ]]; then

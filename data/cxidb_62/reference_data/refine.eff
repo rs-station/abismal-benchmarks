@@ -19,7 +19,7 @@ data_manager {
   }
   fmodel {
     xray_data {
-      outliers_rejection = False
+      outliers_rejection = True
       french_wilson_scale = False
     }
   }
