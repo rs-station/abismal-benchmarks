@@ -108,7 +108,7 @@ if [[ -z $OUTDIR ]]; then
 fi
 
 echo "Time: $(date)"
-echo "Running on node: %HOSTNAME"
+echo "Running on node: $HOSTNAME"
 nvidia-smi
 
 if [[ -v EFFS ]]; then
