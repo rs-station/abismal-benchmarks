@@ -6,8 +6,36 @@ import pandas as pd
 from os.path import exists
 from glob import glob
 from os import listdir
+from inspect import signature
+from functools import wraps
 
 
+def with_axis(func=None, *ax_args):
+    if not callable(func) and func is not None:
+        ax_args = (func, *ax_args)
+
+    if len(ax_args) == 0:
+        ax_args = ("ax", "axis")
+
+    def _decorator(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            old_ax = plt.gca()
+            sig = signature(f)
+            bargs = sig.bind(*args, **kwargs)
+            bargs.apply_defaults()
+            for arg in ax_args:
+                if arg in bargs.arguments:
+                    ax = bargs.arguments[arg]
+                    if ax is not None:
+                        plt.sca(ax)
+            result = f(*bargs.args, **bargs.kwargs)
+            plt.sca(old_ax)
+            return result
+
+        return wrapped
+
+    return _decorator(func) if callable(func) else _decorator
 
 def plot_history(csv_file, keys=None): 
     df = pd.read_csv(csv_file) 
@@ -179,24 +207,12 @@ class BenchmarkReport():
         summary['Memory Usage (MB)'] = self.history['FB Used (MiB)'].max()
         self.summary = summary
 
-    def _do_freds_plot(self):
-        plt.figure()
-        sns.lineplot(
-            self.peak_data,
-            x='Epoch',
-            y='value',
-            hue='Residue',
-            palette='Dark2',
-        )
-        ax = plt.gca()
-        sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
-        #plt.semilogy()
-        plt.grid(which='both', axis='both', ls='-.')
-        plt.xlabel(r"Gradient steps ($\times$" + f"{self.steps_per_epoch})")
-        plt.ylabel(r"Anomalous Peak Height ($\sigma$)")
-        plt.yticks(np.arange(10,100,10), [f"${i}$" for i in range(10,100, 10)])
+    @property
+    def plot_title(self):
+        return ' - '.join([self.summary['Job Name'], self.summary['Benchmark']])
 
-    def plot_peaks(self, min_points=10):
+    @with_axis
+    def plot_peaks(self, min_points=10, ax=None):
         """
         min_points filters peaks which appear in fewer epochs than min_points
         """
@@ -213,30 +229,19 @@ class BenchmarkReport():
         sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
         plt.semilogy()
         plt.grid(which='both', axis='both', ls='-.')
-        #plt.xlabel(r"Gradient steps ($\times$" + f"{self.steps_per_epoch})")
         plt.ylabel(r"Anomalous Peak Height ($\sigma$)")
-        plt.yticks(np.arange(10,100,10), [f"${i}$" for i in range(10,100, 10)])
+        #plt.title(self.plot_title)
 
-
-    def _do_plots(self):
+    @with_axis
+    def plot_history(self, keys, ax=None):
         title = ' - '.join([self.summary['Job Name'], self.summary['Benchmark']])
-        plt.figure()
-        plot_history(f"{self.results_dir}/history.csv", ['CCpred', 'wCCpred'])
-        sns.move_legend(plt.gca(), "upper left", bbox_to_anchor=(1, 1))
-        plt.ylabel("Correlation Coefficient")
-        plt.title(title)
+        plot_history(f"{self.results_dir}/history.csv", keys)
+        sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+        #plt.ylabel("Objective")
+        #plt.title(self.plot_title)
 
-        plt.figure()
-        plot_history(f"{self.results_dir}/history.csv", ['loss', 'NLL', 'KL', 'KL_Σ'])
-        sns.move_legend(plt.gca(), "upper left", bbox_to_anchor=(1, 1))
-        plt.ylabel("Objective")
-        plt.title(title)
-
-        plt.figure()
-        self.plot_peaks()
-        plt.title(title)
-
-        plt.figure()
+    @with_axis
+    def plot_r_values(self, ax=None):
         sns.lineplot(
             self.rvals,
             x="Epoch",
@@ -244,20 +249,45 @@ class BenchmarkReport():
             style='Set',
             color='k',
         )
+        sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
         plt.grid(which='both', axis='both', ls='-.')
-        plt.title(title)
+        #plt.title(self.plot_title)
+
+    @with_axis
+    def plot_cchalf(self, ax=None):
+        sns.lineplot(
+            self.cchalf_data.melt("Labels"), x='Labels', y='value', style='variable', color='k', ax=ax
+        )
+        sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+        plt.xticks(rotation=45, rotation_mode='anchor', ha='right')
+        plt.grid(which='both', axis='both', ls='-.')
+        plt.xlabel("Resolution (Å)")
+        #plt.title(self.plot_title)
+
+    def _do_plots(self):
+        f = plt.figure(figsize=(10,10), constrained_layout=True)
+        if self.cchalf_data is not None:
+            gs = f.add_gridspec(3, 2)
+        else:
+            gs = f.add_gridspec(2, 2)
+
+        ax = f.add_subplot(gs[0, 0])
+        self.plot_history(['CCpred', 'wCCpred'], ax=ax)
+
+        ax = f.add_subplot(gs[0, 1])
+        self.plot_history(['loss', 'NLL', 'KL', 'KL_Σ'], ax=ax)
+
+        ax = f.add_subplot(gs[1, 0])
+        self.plot_peaks(ax=ax)
+
+        ax = f.add_subplot(gs[1, 1])
+        self.plot_r_values(ax=ax)
 
         if self.cchalf_data is not None:
-            plt.figure()
-            sns.lineplot(
-                self.cchalf_data.melt("Labels"), x='Labels', y='value', style='variable', color='k'
-            )
-            plt.legend()
-            plt.xticks(rotation=45, rotation_mode='anchor', ha='right')
-            plt.grid(which='both', axis='both', ls='-.')
-            plt.xlabel("Resolution (Å)")
-            plt.title(title)
-    
+            ax = f.add_subplot(gs[2, :])
+            self.plot_cchalf(ax=ax)
+
+        plt.suptitle(self.plot_title)
 
 class JobReport():
     def __init__(self, *job_dirs, names=None):
