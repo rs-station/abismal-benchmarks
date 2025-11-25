@@ -219,21 +219,22 @@ class BenchmarkReport():
 
 
     def _do_plots(self):
+        title = ' - '.join([self.summary['Job Name'], self.summary['Benchmark']])
         plt.figure()
         plot_history(f"{self.results_dir}/history.csv", ['CCpred', 'wCCpred'])
         sns.move_legend(plt.gca(), "upper left", bbox_to_anchor=(1, 1))
         plt.ylabel("Correlation Coefficient")
-        plt.title(self.summary['Benchmark'])
+        plt.title(title)
 
         plt.figure()
         plot_history(f"{self.results_dir}/history.csv", ['loss', 'NLL', 'KL', 'KL_Σ'])
         sns.move_legend(plt.gca(), "upper left", bbox_to_anchor=(1, 1))
         plt.ylabel("Objective")
-        plt.title(self.summary['Benchmark'])
+        plt.title(title)
 
         plt.figure()
         self.plot_peaks()
-        plt.title(self.summary['Benchmark'])
+        plt.title(title)
 
         plt.figure()
         sns.lineplot(
@@ -244,7 +245,7 @@ class BenchmarkReport():
             color='k',
         )
         plt.grid(which='both', axis='both', ls='-.')
-        plt.title(self.summary['Benchmark'])
+        plt.title(title)
 
         if self.cchalf_data is not None:
             plt.figure()
@@ -254,7 +255,8 @@ class BenchmarkReport():
             plt.legend()
             plt.xticks(rotation=45, rotation_mode='anchor', ha='right')
             plt.grid(which='both', axis='both', ls='-.')
-            plt.title(self.summary['Benchmark'])
+            plt.xlabel("Resolution (Å)")
+            plt.title(title)
     
 
 class JobReport():
@@ -271,6 +273,7 @@ class JobReport():
                 try:
                     report = BenchmarkReport(f'{job_dir}/{benchmark}')
                     report.summary['name'] = name
+                    report.summary['Job Name'] = name
                     self.reports.append(report)
                     records.append(report.summary)
                 except Exception as e:
