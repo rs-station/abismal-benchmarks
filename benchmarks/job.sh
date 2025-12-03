@@ -16,7 +16,7 @@ source ../setup.sh
 #1 - progress bar
 #2 - one line per epoch
 KERAS_VERBOSITY=2
-num_epochs=30
+num_epochs=100
 
 ################################################################################
 # Base parameters for all tests
@@ -25,15 +25,16 @@ BASE_PARAMS=(
   --optimizer=wadam
   --mc-samples=32
   --init-scale=1.0
-  --prior-distribution=halfnormal
+  --prior-distribution=wilson
   --posterior-type=structure_factor
   --posterior-distribution=foldednormal
   --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
   --shuffle-buffer=10_000
   --scale-posterior-bijector=softplus
-  --scale-posterior-distribution=normal
-  --scale-prior-distribution=cauchy
-  --activation=swish
+  --scale-posterior-distribution=foldednormal
+  --scale-prior-distribution=lognormal
+  --studentt-dof=32
+  --activation=relu
   --kl-weight=1e0
   --scale-kl-weight=1e0
   --batch-size=100
@@ -47,7 +48,7 @@ BASE_PARAMS=(
   --epochs=$num_epochs
   --learning-rate=1e-3
   --beta-1=0.9
-  --beta-2=0.9
+  --beta-2=0.999
 )
 
 ################################################################################
