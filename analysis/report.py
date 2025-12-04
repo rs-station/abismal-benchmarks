@@ -264,8 +264,8 @@ class BenchmarkReport():
         plt.xlabel("Resolution (Å)")
         #plt.title(self.plot_title)
 
-    def _do_plots(self):
-        f = plt.figure(figsize=(10,10), constrained_layout=True)
+    def _do_plots(self, figsize=(15,10)):
+        f = plt.figure(figsize=figsize, constrained_layout=True)
         if self.cchalf_data is not None:
             gs = f.add_gridspec(3, 2)
         else:

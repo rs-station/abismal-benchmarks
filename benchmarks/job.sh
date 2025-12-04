@@ -22,7 +22,7 @@ num_epochs=100
 # Base parameters for all tests
 BASE_PARAMS=(
   --normalizer=rms
-  --optimizer=wadam
+  --optimizer=adam
   --mc-samples=32
   --init-scale=1.0
   --prior-distribution=wilson
