@@ -1,7 +1,7 @@
 BENCHMARKNAME=cxidb_81_small
 INPUTS=(
-    $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/r0011/combine_experiments_t016/intermediates/t016_rg013_chunk000_reintegrated_experiments.json
-    $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/data/figure7/by_run_t016_mr_ch/r0011/combine_experiments_t016/intermediates/t016_rg013_chunk000_reintegrated_reflections.pickle
+   $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/figure7/r0011_t016_rg013_chunk000_reintegrated.expt  
+   $ABISMAL_BENCHMARKS/data/cxidb_81/reflection_data/figure7/r0011_t016_rg013_chunk000_reintegrated.refl
 )
 
 EFFS=(
