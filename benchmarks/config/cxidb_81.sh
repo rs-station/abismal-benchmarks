@@ -11,5 +11,3 @@ EXPERIMENT_PARAMS=(
     --dmin 1.8
 )
 
-# Disable MW Prior
-MULTI_WILSON_PARAMS=()

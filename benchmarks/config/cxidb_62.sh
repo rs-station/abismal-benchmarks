@@ -16,5 +16,3 @@ EXPERIMENT_PARAMS=(
     --space-group "P 65"
 )
 
-# Disable MW Prior
-MULTI_WILSON_PARAMS=()

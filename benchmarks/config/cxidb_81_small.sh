@@ -15,6 +15,3 @@ EXPERIMENT_PARAMS=(
     --steps-per-epoch=1_000
 )
 
-# Disable MW Prior
-MULTI_WILSON_PARAMS=()
-

@@ -52,14 +52,6 @@ BASE_PARAMS=(
 )
 
 ################################################################################
-# Base parameters for all multivariate Wilson tests
-MULTI_WILSON_PARAMS=(
-    --separate-friedel-mates
-    --parents=0,0
-    -r=0,0.999
-)
-
-################################################################################
 # Parameters governing post-training crossvalidation run 
 CCHALF_PARAMS=(
     --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
@@ -72,9 +64,6 @@ CCHALF_PARAMS=(
 # - EFFS (a bash array of file)
 # - BENCHMARKNAME (a descriptive name of this benchmark)
 # - EXPERIMENT_PARAMS (a bash array of abismal CLI params)
-# - MULTI_WILSON_PARAMS (optional overrides for the MULTI_WILSON_PARAMS)
-# Note that if MULTI_WILSON_PARAMS isn't specified in the config file,
-# the multi-wilson prior will be used 
 if [[ "$#" -gt 0 ]]; then
     echo "Loading user supplied config..."
     BENCHMARKCONFIG=$1
@@ -133,9 +122,6 @@ echo "${BASE_PARAMS[@]}"
 echo "Experiment parameters from env:"
 echo "${EXPERIMENT_PARAMS[@]}"
 
-echo "Multi-Wilson parameters from env:"
-echo "${MULTI_WILSON_PARAMS[@]}"
-
 if [[ -v REFERENCE_MTZ ]]; then
     echo "Setting reference mtz as: $REFERENCE_MTZ"
     EXPERIMENT_PARAMS+=( --reference-mtz=$REFERENCE_MTZ )
@@ -145,7 +131,6 @@ fi
 abismal  \
     "${BASE_PARAMS[@]}" \
     "${EXPERIMENT_PARAMS[@]}" \
-    "${MULTI_WILSON_PARAMS[@]}" \
     -o $OUTDIR \
     ${INPUTS[@]} 
 
