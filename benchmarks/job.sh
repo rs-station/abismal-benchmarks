@@ -20,35 +20,11 @@ num_epochs=100
 
 ################################################################################
 # Base parameters for all tests
-BASE_PARAMS=(
-  --normalizer=rms
-  --optimizer=adam
-  --mc-samples=32
-  --init-scale=1.0
-  --prior-distribution=wilson
-  --posterior-type=structure_factor
-  --posterior-distribution=foldednormal
+ABISMAL_BASE_PARAMS=(
   --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
-  --shuffle-buffer=10_000
-  --scale-posterior-bijector=softplus
-  --scale-posterior-distribution=foldednormal
-  --scale-prior-distribution=lognormal
   --studentt-dof=32
-  --activation=relu
-  --kl-weight=1e0
-  --scale-kl-weight=1e0
-  --batch-size=100
-  --d-model=32
-  --layers=20
-  --test-fraction=0.1
   --num-cpus=10
-  --phenix-frequency=1
-  --epsilon=1e-12
-  --adam-epsilon=1e-7
   --epochs=$num_epochs
-  --learning-rate=1e-3
-  --beta-1=0.9
-  --beta-2=0.999
 )
 
 ################################################################################
@@ -69,16 +45,15 @@ if [[ "$#" -gt 0 ]]; then
     BENCHMARKCONFIG=$1
 elif [ -n ${SLURM_ARRAY_TASK_ID} ]; then
     #Find all available benchmark config files
-    ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config`)
+    ALLCONFIG=(`ls $ABISMAL_BENCHMARKS/benchmarks/config/*.sh`)
     echo "Listing available configs..."
     for conf in ${ALLCONFIG[@]};do
         echo " - $conf"
     done
 
     echo "Choosing config from job array task ID..."
-
     #Select one based on the job array task id
-    BENCHMARKCONFIG=$ABISMAL_BENCHMARKS/benchmarks/config/${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
+    BENCHMARKCONFIG=${ALLCONFIG[$SLURM_ARRAY_TASK_ID]}
 else
     echo "Failed to determine config file location, exitting..."
     exit
@@ -117,7 +92,7 @@ mkdir -p $OUTDIR
 cp $0 $OUTDIR/merge.sh
 
 echo "Base parameters from env:"
-echo "${BASE_PARAMS[@]}"
+echo "${ABISMAL_BASE_PARAMS[@]}"
 
 echo "Experiment parameters from env:"
 echo "${EXPERIMENT_PARAMS[@]}"
@@ -129,7 +104,7 @@ if [[ -v REFERENCE_MTZ ]]; then
 fi
 
 abismal  \
-    "${BASE_PARAMS[@]}" \
+    "${ABISMAL_BASE_PARAMS[@]}" \
     "${EXPERIMENT_PARAMS[@]}" \
     -o $OUTDIR \
     ${INPUTS[@]} 
