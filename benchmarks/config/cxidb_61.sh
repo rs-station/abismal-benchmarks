@@ -14,5 +14,6 @@ EXPERIMENT_PARAMS=(
     --cell 53.747 71.215 91.107 90.00 90.00 90.00
     --space-group "P 2 21 21"
     --steps-per-epoch=1_000
+    #--isigi-cutoff=1.0 #match published processing
 )
 

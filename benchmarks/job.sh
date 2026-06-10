@@ -21,10 +21,35 @@ num_epochs=100
 ################################################################################
 # Base parameters for all tests
 ABISMAL_BASE_PARAMS=(
-  --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
-  --studentt-dof=32
-  --num-cpus=10
-  --epochs=$num_epochs
+    --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
+    --num-cpus=10
+    --early-stopping-criterion=KL
+    --early-stopping-patience=$num_epochs
+    --epochs=$num_epochs
+    --anomalous
+    --optimizer='WAdam'
+    --beta-1=0.9
+    --beta-2=0.9
+    --learning-rate=1e-3
+    --activation='relu'
+    --normalizer='l2'
+    #--gated
+    --init-scale=1.0
+    --mc-samples=32
+    --layers=5
+    --d-model=256
+    --batch-size=100
+    --kl-weight=1e0
+    --scale-kl-weight=1e0
+    --prior-distribution='empirical_wilson'
+    #--prior-distribution='wilson'
+    --posterior-type='structure_factor'
+    --posterior-distribution='nakagami'
+    --scale-prior-distribution='halfnormal'
+    --scale-posterior-distribution='foldednormal'
+    --scale-posterior-bijector='softplus'
+    --studentt-dof=32
+    --optimize-scale-prior
 )
 
 ################################################################################
@@ -67,6 +92,9 @@ source $BENCHMARKCONFIG
 # Allow BENCHMARKCONFIG to overload OUTDIR
 if [[ -z $OUTDIR ]]; then
     echo "OUTDIR is unset, using default..."
+    if [[ -z $SLURM_ARRAY_JOB_ID ]]; then
+        SLURM_ARRAY_JOB_ID=`date +%Y%m%d`
+    fi
     OUTDIR=$ABISMAL_BENCHMARKS/results/job_$SLURM_ARRAY_JOB_ID/$BENCHMARKNAME
 fi
 
@@ -83,6 +111,15 @@ if [[ -v EFFS ]]; then
     echo "Adding PHENIX configs from"
     echo " - $EFFS"
     EXPERIMENT_PARAMS+=( --eff-files $EFFS )
+fi
+
+# Avoid overwriting an existing output dir by appending _N
+if [[ -d $OUTDIR ]]; then
+    _N=1
+    while [[ -d ${OUTDIR}_${_N} ]]; do
+        (( _N++ ))
+    done
+    OUTDIR=${OUTDIR}_${_N}
 fi
 
 # Prepare output dir

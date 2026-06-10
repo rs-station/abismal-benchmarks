@@ -2,11 +2,11 @@ data_manager {
   miller_array {
     file = "$MTZFILE"
     labels {
-      name = "I(+),SIGI(+),I(-),SIGI(-),merged"
-      array_type = unknown amplitude bool complex hendrickson_lattman \
-                   integer *intensity nonsense
+      name = "F,SIGF"
+      array_type = unknown *amplitude bool complex hendrickson_lattman \
+                   integer intensity nonsense
     }
-    user_selected_labels = "I(+),SIGI(+),I(-),SIGI(-),merged"
+    user_selected_labels = "F,SIGF"
   }
   miller_array {
     file = "$ABISMAL_BENCHMARKS/data/cxidb_81/reference_data/r-free-flags.mtz"
@@ -20,7 +20,7 @@ data_manager {
   fmodel {
     xray_data {
       outliers_rejection = True
-      french_wilson_scale = True
+      french_wilson_scale = False
     }
   }
   default_miller_array = "$MTZFILE"

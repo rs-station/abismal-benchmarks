@@ -14,5 +14,6 @@ EXPERIMENT_PARAMS=(
     --dmin 1.5
     --cell 105.85 105.85 75.4595 90 90 120
     --space-group "P 65"
+    --isigi-cutoff=1.0
 )
 

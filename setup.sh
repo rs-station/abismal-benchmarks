@@ -2,7 +2,10 @@
 
 #EDIT setup script location:
 #Script provides abismal and PHENIX
-source ~/tools/abismal/setup.sh
+source /home/kmdalton/opt/phenix-1.21.2-5419/phenix_env.sh
+source ~/opt/anaconda/etc/profile.d/conda.sh
+conda activate abismal
+
 
 # Handle ./setup.sh and source setup.sh
 [[ $0 != $BASH_SOURCE ]] && 

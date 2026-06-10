@@ -16,3 +16,5 @@ hide volume, fofc_m
 
 draw 4000, 3000, antialias=2
 save zn.png
+
+

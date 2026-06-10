@@ -143,3 +143,74 @@ else:
     anim.save("hist_isigi.gif")
 
 plt.close(fig)
+
+# ── Resolution scatterplot animation ─────────────────────────────────────────
+
+fig, ax = plt.subplots()
+
+if has_structure_factors:
+    ax.set_ylabel("Structure Factor Amplitude (|F|)")
+else:
+    ax.set_ylabel("Intensity (I)")
+
+ax.set_xlabel(r"Resolution ($\AA$)")
+ax.set_yscale("log")
+ax.grid(which="major", linestyle="-.")
+
+# Pre-load resolution data
+res_scatter_data = []
+for mtz_file in tqdm(mtz_files, desc="Loading resolution scatter data"):
+    d = rs.read_mtz(mtz_file).stack_anomalous().dropna()
+    d = d.compute_dHKL()
+    dHKL = d["dHKL"].values.astype(float)
+    inv_d2 = 1.0 / dHKL**2
+    vals = (d.F if has_structure_factors else d.I).values.astype(float)
+    res_scatter_data.append((inv_d2, vals, epoch_from_file(mtz_file)))
+
+all_inv_d2 = np.concatenate([r[0] for r in res_scatter_data])
+all_vals   = np.concatenate([r[1] for r in res_scatter_data])
+x_min, x_max = all_inv_d2.min(), all_inv_d2.max()
+y_min = all_vals[all_vals > 0].min()
+y_max = all_vals.max()
+ax.set_xlim(x_min, x_max)
+ax.set_ylim(y_min, y_max)
+
+# Choose tick positions in 1/d² space, label them in Å
+d_tick_values = np.array([10.0, 5.0, 3.0, 2.0, 1.5, 1.2, 1.0, 0.9, 0.8])
+d_tick_values = d_tick_values[(1.0 / d_tick_values**2 >= x_min) & (1.0 / d_tick_values**2 <= x_max)]
+ax.set_xticks(1.0 / d_tick_values**2)
+ax.set_xticklabels([f"{d:g}" for d in d_tick_values])
+
+(res_line,) = ax.plot([], [], "k.", alpha=0.05, markersize=2)
+res_title = ax.text(0.5, 1.01, "", transform=ax.transAxes, ha="center")
+
+
+def init_res():
+    res_line.set_data([], [])
+    res_title.set_text("")
+    return res_line, res_title
+
+
+def update_res(frame):
+    inv_d2, vals, epoch = res_scatter_data[frame]
+    res_line.set_data(inv_d2, vals)
+    res_title.set_text(f"Epoch {epoch}")
+    return res_line, res_title
+
+
+anim = FuncAnimation(
+    fig,
+    update_res,
+    frames=len(res_scatter_data),
+    init_func=init_res,
+    blit=True,
+)
+
+if has_structure_factors:
+    anim.save("scatter_f_vs_resolution.mp4", writer=FFMpegWriter())
+    anim.save("scatter_f_vs_resolution.gif")
+else:
+    anim.save("scatter_i_vs_resolution.mp4", writer=FFMpegWriter())
+    anim.save("scatter_i_vs_resolution.gif")
+
+plt.close(fig)
