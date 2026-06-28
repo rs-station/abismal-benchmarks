@@ -34,22 +34,25 @@ ABISMAL_BASE_PARAMS=(
     --activation='relu'
     --normalizer='l2'
     #--gated
-    --init-scale=1.0
+    --init-scale=1.0 #wider init avoids dip at the early in training
     --mc-samples=32
     --layers=5
     --d-model=256
     --batch-size=100
     --kl-weight=1e0
     --scale-kl-weight=1e0
-    --prior-distribution='empirical_wilson'
-    #--prior-distribution='wilson'
     --posterior-type='structure_factor'
+    #--prior-distribution='empirical_wilson'
+    --prior-distribution='auto_wilson'
     --posterior-distribution='nakagami'
-    --scale-prior-distribution='halfnormal'
+    --scale-prior-distribution='lognormal'
     --scale-posterior-distribution='foldednormal'
     --scale-posterior-bijector='softplus'
+    #--debug
+    #--run-eagerly
+    #--embed
     --studentt-dof=32
-    --optimize-scale-prior
+    #--optimize-scale-prior
 )
 
 ################################################################################
