@@ -15,7 +15,7 @@ source ../setup.sh
 #0 - silent
 #1 - progress bar
 #2 - one line per epoch
-KERAS_VERBOSITY=2
+KERAS_VERBOSITY=1
 num_epochs=100
 
 ################################################################################
@@ -27,14 +27,17 @@ ABISMAL_BASE_PARAMS=(
     --early-stopping-patience=$num_epochs
     --epochs=$num_epochs
     --anomalous
-    --optimizer='WAdam'
+    --optimizer='Adabelief'
     --beta-1=0.9
     --beta-2=0.9
     --learning-rate=1e-3
-    --activation='relu'
-    --normalizer='l2'
+    --adam-epsilon=1e-7
+    --epsilon=1e-12
+    --activation='swish'
+    --normalizer='rms'
     #--gated
-    --init-scale=1.0 #wider init avoids dip at the early in training
+    #--dropout=0.9
+    --init-scale=0.01
     --mc-samples=32
     --layers=5
     --d-model=256
@@ -42,16 +45,17 @@ ABISMAL_BASE_PARAMS=(
     --kl-weight=1e0
     --scale-kl-weight=1e0
     --posterior-type='structure_factor'
-    #--prior-distribution='empirical_wilson'
-    --prior-distribution='auto_wilson'
-    --posterior-distribution='nakagami'
+    #--prior-distribution='auto_wilson'
+    --prior-distribution='wilson'
+    #--prior-distribution='halfnormal'
+    --posterior-distribution='foldednormal'
     --scale-prior-distribution='lognormal'
     --scale-posterior-distribution='foldednormal'
     --scale-posterior-bijector='softplus'
     #--debug
     #--run-eagerly
     #--embed
-    --studentt-dof=32
+    #--studentt-dof=32
     #--optimize-scale-prior
 )
 
@@ -150,15 +154,15 @@ abismal  \
     ${INPUTS[@]} 
 
 
-echo "################################################################################"
-echo "# Training ended... starting CChalf calculation"
-echo "################################################################################"
-cd $OUTDIR
-checkpoint_file=`ls -t epoch_*.keras | head -1`
-abismal.cchalf \
-    "${CCHALF_PARAMS[@]}" \
-    --sf-init epoch_0.keras \
-    datamanager.yml \
-    $checkpoint_file
-
-
+#echo "################################################################################"
+#echo "# Training ended... starting CChalf calculation"
+#echo "################################################################################"
+#cd $OUTDIR
+#checkpoint_file=`ls -t epoch_*.keras | head -1`
+#abismal.cchalf \
+#    "${CCHALF_PARAMS[@]}" \
+#    --sf-init epoch_0.keras \
+#    datamanager.yml \
+#    $checkpoint_file
+#
+#
