@@ -87,9 +87,10 @@ ax.grid(which="major", linestyle="-.")
 
 # Pre-load SNR data
 hist_data = []
+eps = 1e-6
 for mtz_file in tqdm(mtz_files, desc="Loading histogram data"):
     d = rs.read_mtz(mtz_file).stack_anomalous().dropna()
-    snr = (d.F / d.SIGF if has_structure_factors else d.I / d.SIGI).values
+    snr = (d.F / (d.SIGF + eps) if has_structure_factors else d.I / (d.SIGI + eps)).values
     hist_data.append((snr, epoch_from_file(mtz_file)))
 
 # Fixed x-limits across all frames

@@ -3,9 +3,14 @@ INPUTS=(
     $ABISMAL_BENCHMARKS/data/cxidb_61/reflection_data/all.stream
 )
 
-EFFS=(
-    $ABISMAL_BENCHMARKS/data/cxidb_61/reference_data/refine.eff
+PDBS=(
+    $ABISMAL_BENCHMARKS/data/cxidb_61/reference_data/5xfc_mr.pdb
 )
+
+RFREE=$ABISMAL_BENCHMARKS/data/cxidb_61/reference_data/r-free-flags.mtz
+# Wavelength for torchref's f'/f'' anomalous correction (source: 5xfc_mr.pdb REMARK 200)
+WAVELENGTH=0.954
+
 
 # Dataset specific params
 EXPERIMENT_PARAMS=(

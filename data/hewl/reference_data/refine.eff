@@ -40,6 +40,7 @@ refinement {
   }
   main {
     number_of_macro_cycles = 5
+    wavelength=1.892
   }
   modify_start_model {
     modify {
