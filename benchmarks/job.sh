@@ -134,14 +134,18 @@ nvidia-smi
 # alone. Treat peak counts and z-scores from banked runs as a different
 # measurement, not a regression.
 #
-# Three worker flags have no route out to here. --peak-dmin (pin the FFT grid to
-# a resolution limit, needed to compare peak heights against phenix's padded
-# mtz), --no-rigid-body and --rigid-body-iter are all accepted by
-# abismal/callbacks/_torchref_worker.py but are neither parsed by
-# abismal/command_line/parser/torchref.py nor forwarded by TorchRefRunner. Do
-# not add config variables for them until abismal plumbs them through; the
-# defaults (no dmin cut, rigid body on, 30 iterations) are what every benchmark
-# gets.
+# The rigid-body step is reachable from here if a benchmark ever needs it:
+# abismal exposes --torchref-no-rigid-body and --torchref-rigid-body-iter, and
+# TorchRefRunner forwards both. No config sets them, because the defaults
+# (rigid body on, 30 iterations) are what every benchmark should use -- 30 is
+# converged for the sub-Angstrom corrections these starting models need, and
+# the worker prints a warning if a run's shift is large enough to want more.
+#
+# There is no --peak-dmin. It existed to pin the FFT grid to a resolution limit,
+# which mattered when gemmi sized the grid from the largest Miller index
+# present. Sizing by voxel size removed that coupling -- the grid now comes from
+# the unit cell alone -- so the flag was dropped rather than left with help text
+# describing a problem that no longer exists.
 if [[ -v PDBS ]]; then
     # Join PDBS with comma
     SAVEIFS="$IFS"
