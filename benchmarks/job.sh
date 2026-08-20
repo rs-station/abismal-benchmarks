@@ -124,6 +124,24 @@ nvidia-smi
 # config to a list of starting models. On anomalous data the torchref worker
 # also builds an anomalous difference map and writes peaks.csv per epoch, so
 # PDBS alone covers what EFFS used to do via phenix.refine + rs.find_peaks.
+#
+# The worker now runs a per-chain rigid-body step before the ADP macrocycles and
+# finds peaks with skimage's peak_local_max on a 0.3 A grid (previously a gemmi
+# flood fill on a sample_rate-sized grid), so scikit-image is required -- see the
+# pinning note in setup.sh. peaks.csv keeps its old column schema, but the
+# numbers in it do not carry over: hewl now resolves 10 sites instead of 6
+# (both sulfurs of each disulfide) and peakz shifts by ~0.1 from the grid change
+# alone. Treat peak counts and z-scores from banked runs as a different
+# measurement, not a regression.
+#
+# Three worker flags have no route out to here. --peak-dmin (pin the FFT grid to
+# a resolution limit, needed to compare peak heights against phenix's padded
+# mtz), --no-rigid-body and --rigid-body-iter are all accepted by
+# abismal/callbacks/_torchref_worker.py but are neither parsed by
+# abismal/command_line/parser/torchref.py nor forwarded by TorchRefRunner. Do
+# not add config variables for them until abismal plumbs them through; the
+# defaults (no dmin cut, rigid body on, 30 iterations) are what every benchmark
+# gets.
 if [[ -v PDBS ]]; then
     # Join PDBS with comma
     SAVEIFS="$IFS"

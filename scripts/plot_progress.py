@@ -190,7 +190,10 @@ for folder in folders:
     epoch = int(folder.split('_')[-1])
     csv_file = folder + '/peaks.csv'
     #phenix writes peaks.csv via rs.find_peaks; the torchref worker writes the
-    #same table itself and also echoes it into stdout.txt, which is the fallback
+    #same table itself and also echoes it into stdout.txt, which is the fallback.
+    #The worker's switch from gemmi flood fill to skimage peak_local_max kept the
+    #column schema (chain, seqid, residue, name, dist, peak, peakz, score,
+    #scorez, cen[xyz], coord[xyz]), so both producers still parse identically.
     if exists(csv_file):
         _df = pd.read_csv(csv_file)
     else:
@@ -201,6 +204,12 @@ for folder in folders:
 df = pd.concat(df) if len(df) > 0 else pd.DataFrame()
 
 if 'peakz' in df:
+    #Nothing here fixes the number of peaks. The worker's peak_local_max search
+    #returns however many sites clear the z-score cutoff, and that count moves
+    #between epochs and between abismal versions -- hewl went from 6 sites to 10
+    #when the map grid changed to a 0.3 A voxel, and every peakz shifted by ~0.1
+    #with it. So the hue/style levels below are whatever the data contains, and
+    #z-scores are only comparable within a run, never against a banked one.
     plt.figure()
     df['seqid'] = df.apply(lambda x: f'{x.chain}-{x.seqid}', axis=1)
 
