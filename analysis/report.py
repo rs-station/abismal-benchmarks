@@ -69,13 +69,25 @@ def plot_history(csv_file, keys=None):
     plt.grid(which='both', axis='both', ls='-.') 
 
 
+# Markers written by the torchref worker's print_summary. Keep in sync with
+# abismal/callbacks/_torchref_worker.py and scripts/plot_progress.py.
+TORCHREF_SUMMARY_BEGIN = "=== torchref summary ==="
+TORCHREF_SUMMARY_END = "=== end torchref summary ==="
+
+
 class BenchmarkReport():
     def __init__(self, results_dir, steps_per_epoch=1_000, cchalf_bins=12):
         self.cchalf_bins = cchalf_bins
         self.cchalf_data = None
         self.results_dir = results_dir
         self.steps_per_epoch = steps_per_epoch
-        self.job_number = int(results_dir.split('/')[-2].removeprefix('job_'))
+        # Runs used to land in results/job_<N>/<benchmark>/, so the job number
+        # was parsed out of the path. job.sh now writes results/torchref/
+        # <benchmark>/, where there is no number to find -- keep the label as a
+        # string rather than crashing on int('torchref').
+        parent = results_dir.rstrip('/').split('/')[-2]
+        stripped = parent.removeprefix('job_')
+        self.job_number = int(stripped) if stripped.isdigit() else parent
         self.benchmark_name = results_dir.split('/')[-1]
         self._populate_data()
         #self._do_plots()
@@ -116,8 +128,28 @@ class BenchmarkReport():
         self.peak_data = data.melt(['Epoch', 'chain', 'residue', 'seqid'], 'peakz')
         self.peak_data['Residue'] = self.peak_data['residue'] + '-' + self.peak_data['seqid'].astype('str') + ':' + self.peak_data['chain']
 
-        log_files = glob(f"{self.results_dir}/eff*/*.log")
+        # R-values come from two formats. phenix.refine wrote a log ending in
+        # "Final R-work = 0.1973, R-free = 0.2053"; the torchref worker writes a
+        # delimited summary block to stdout.txt, the same one
+        # scripts/plot_progress.py parses. Read whichever is present so banked
+        # phenix-era results and current torchref results both work.
         records = []
+        for filename in glob(f"{self.results_dir}/torchref*/stdout.txt"):
+            epoch = int(filename.split('/')[-2].split('_')[-1])
+            rwork = rfree = None
+            text = open(filename).read()
+            if TORCHREF_SUMMARY_BEGIN in text and TORCHREF_SUMMARY_END in text:
+                block = text.split(TORCHREF_SUMMARY_BEGIN)[-1].split(TORCHREF_SUMMARY_END)[0]
+                for line in block.splitlines():
+                    if line.startswith('Rwork='):
+                        rwork = float(line.split('=')[1])
+                    elif line.startswith('Rfree='):
+                        rfree = float(line.split('=')[1])
+            if rwork is not None and rfree is not None:
+                records.append({'Epoch': epoch, 'R': rwork, 'Set': 'Work'})
+                records.append({'Epoch': epoch, 'R': rfree, 'Set': 'Free'})
+
+        log_files = glob(f"{self.results_dir}/eff*/*.log")
         for filename in log_files:
             effstring = filename.split('/')[-2]
             epoch = int(effstring.split('_')[-1])
