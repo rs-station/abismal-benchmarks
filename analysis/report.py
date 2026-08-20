@@ -88,16 +88,30 @@ class BenchmarkReport():
         self.summary = {}
         self.history = pd.read_csv(f"{self.results_dir}/history.csv")
         
-        peaks_files = glob(f"{self.results_dir}/eff*/peaks.csv")
+        # Refinement used to be phenix.refine driven by EFFS, writing to
+        # eff_<i>_asu_<j>_epoch_<n>/. It is now torchref, writing to
+        # torchref_<i>_asu_<j>_epoch_<n>/. Both are globbed so banked results
+        # stay readable; the underscore positions are identical, so the parsing
+        # below is unchanged.
+        peaks_files = (glob(f"{self.results_dir}/torchref*/peaks.csv")
+                       + glob(f"{self.results_dir}/eff*/peaks.csv"))
         data = []
         for peaks_file in peaks_files:
             df = pd.read_csv(peaks_file)
-            effstring = peaks_file.split('/')[-2]
-            df['Eff'] = int(effstring.split('_')[1])
-            df['Asu'] = int(effstring.split('_')[3])
-            df['Epoch'] = int(effstring.split('_')[-1])
+            if df.empty:
+                # An epoch can legitimately find no peaks above the cutoff.
+                continue
+            runstring = peaks_file.split('/')[-2]
+            df['Eff'] = int(runstring.split('_')[1])
+            df['Asu'] = int(runstring.split('_')[3])
+            df['Epoch'] = int(runstring.split('_')[-1])
             data.append(df)
 
+        if not data:
+            raise FileNotFoundError(
+                f"no peaks.csv under {self.results_dir}/torchref*/ or eff*/. "
+                "A non-anomalous run writes none; an anomalous one should."
+            )
         data = pd.concat(data)
         self.peak_data = data.melt(['Epoch', 'chain', 'residue', 'seqid'], 'peakz')
         self.peak_data['Residue'] = self.peak_data['residue'] + '-' + self.peak_data['seqid'].astype('str') + ':' + self.peak_data['chain']
