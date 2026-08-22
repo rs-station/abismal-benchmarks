@@ -7,8 +7,10 @@ Scripts for abismal benchmarking and development of ABISMAL.
     ```
     micromamba create -yn abismal -c conda-forge python=3.12 dials "pandas<2.4" "scipy<1.18"
     micromamba activate abismal
-    pip install -e "/path/to/abismal[dev,torchref]"
+    pip install torch --index-url https://download.pytorch.org/whl/cpu
+    pip install -e "/path/to/abismal[dev,cuda,torchref]"
     ```
+    Refinement runs on CPU, so install the CPU build of PyTorch first -- the CUDA build is several unused gigabytes, and it cannot be safely uninstalled later. Extras compose, so ask for all of them in one command.
     The pins keep numpy inside the one window tensorflow, torchref and dxtbx all accept; see "About the version pins" in the abismal README. Sourcing `setup.sh` checks the active environment and warns if anything is missing.
  2) clone the benchmarks repo onto your cluster filesystem. `git clone https://github.com/rs-station/abismal-benchmarks`
  3) Enter the benchmarks directory `cd abismal-benchmarks`
