@@ -3,11 +3,13 @@ Scripts for abismal benchmarking and development of ABISMAL.
 
 # Setup
  1) install the dependencies, `abismal`, `phenix`, and `careless`. For data localization you will need the standard command line programs `wget`, `bunzip2`, and `tar`
- 1b) per-epoch refinement runs through `torchref` in its own environment, pointed at by `ABISMAL_TORCHREF_PYTHON` in `setup.sh`. That environment also needs `scikit-image`, which the torchref worker uses for anomalous peak finding. Install it with numpy pinned -- a bare `pip install scikit-image` pulls numpy 2.5 and breaks both tensorflow (<2.1.0) and torchref (<2.4.0):
+ 1b) per-epoch refinement runs through `torchref` in the same environment as abismal -- there is no second environment and no `ABISMAL_TORCHREF_PYTHON`. Install it with the `torchref` extra, which also brings the `scikit-image` the worker uses for anomalous peak finding:
     ```
-    pip install "numpy==2.0.2" "scikit-image==0.24.0"
+    micromamba create -yn abismal -c conda-forge python=3.12 dials "pandas<2.4" "scipy<1.18"
+    micromamba activate abismal
+    pip install -e "/path/to/abismal[dev,torchref]"
     ```
-    Sourcing `setup.sh` verifies both and warns if they are wrong.
+    The pins keep numpy inside the one window tensorflow, torchref and dxtbx all accept; see "About the version pins" in the abismal README. Sourcing `setup.sh` checks the active environment and warns if anything is missing.
  2) clone the benchmarks repo onto your cluster filesystem. `git clone https://github.com/rs-station/abismal-benchmarks`
  3) Enter the benchmarks directory `cd abismal-benchmarks`
  4) Modify the `setup.sh` script to source the right files to get the dependencies into your path. 
