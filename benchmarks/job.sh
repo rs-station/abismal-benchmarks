@@ -11,18 +11,19 @@
 
 #Set up conda env
 source ../setup.sh
-OUTDIR=$ABISMAL_BENCHMARKS/results/torchref/$BENCHMARKNAME
+OUTDIR=$ABISMAL_BENCHMARKS/results/baseline_with_cc/$BENCHMARKNAME
 
 #0 - silent
 #1 - progress bar
 #2 - one line per epoch
 KERAS_VERBOSITY=1
-num_epochs=100
+num_epochs=30
 
 ################################################################################
 # Base parameters for all tests
 ABISMAL_BASE_PARAMS=(
     --keras-verbosity=$KERAS_VERBOSITY #one line per epoch
+    --metadata-noise-factor=0.1
     --num-cpus=10
     --early-stopping-criterion=KL
     --early-stopping-patience=$num_epochs
@@ -35,15 +36,13 @@ ABISMAL_BASE_PARAMS=(
     --adam-epsilon=1e-7
     --epsilon=1e-12
     --ff-epsilon=0.0
-    --normalizer-gain=1.0
-    --normalizer='activation'
+    --pre-activation='relu'
     --activation='relu'
     #--jit-compile
-    #--pre-activation='relu'
-    --batch-normalize #commented means no instance norm
+    #--batch-normalize #commented means no instance norm
     #--gated
     #--dropout=0.9
-    #--sample-reflections-per-image=8
+    #--sample-reflections-per-image=16
     --init-scale=1.0
     --mc-samples=32
     --layers=5
@@ -154,7 +153,10 @@ if [[ -v PDBS ]]; then
     IFS="$SAVEIFS"
     echo "Adding torchref starting models from"
     echo " - $PDBS"
-    EXPERIMENT_PARAMS+=( --torchref-pdb=$PDBS )
+    EXPERIMENT_PARAMS+=( 
+        --torchref-pdb=$PDBS 
+        --torchref-allow-overlap
+    )
 fi
 
 # A fixed R-free set. Without one torchref invents a fresh random set on every
@@ -229,15 +231,15 @@ abismal  \
     ${INPUTS[@]} 
 
 
-#echo "################################################################################"
-#echo "# Training ended... starting CChalf calculation"
-#echo "################################################################################"
-#cd $OUTDIR
-#checkpoint_file=`ls -t epoch_*.keras | head -1`
-#abismal.cchalf \
-#    "${CCHALF_PARAMS[@]}" \
-#    --sf-init epoch_0.keras \
-#    datamanager.yml \
-#    $checkpoint_file
-#
-#
+echo "################################################################################"
+echo "# Training ended... starting CChalf calculation"
+echo "################################################################################"
+cd $OUTDIR
+checkpoint_file=`ls -t epoch_*.keras | head -1`
+abismal.cchalf \
+    "${CCHALF_PARAMS[@]}" \
+    --sf-init epoch_0.keras \
+    datamanager.yml \
+    $checkpoint_file
+
+
