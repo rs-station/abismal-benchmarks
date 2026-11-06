@@ -4,3 +4,6 @@ env.sh
 __pycache__/
 smoke/
 setup.log
+bench/*/
+bench/*.mtz
+bench/*.out
