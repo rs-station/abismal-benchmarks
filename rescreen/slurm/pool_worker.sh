@@ -26,11 +26,12 @@ mkdir -p "$TORCH_EXTENSIONS_DIR" && cp -a ~/.cache/torch_extensions/. "$TORCH_EX
 export TORCHREF_NUM_THREADS=${TORCHREF_NUM_THREADS:-2}
 
 # Expected wall time of one run in minutes, training plus the final refinement, with margin. Calibrated from the
-# base seed-1 runs; a run is only started if this fits in the job's remaining time.
+# base seed-1 runs on 2026-11-06 (hewl 8, cx81s 9, cx61 18, cx62 36 min), doubled for the larger arms. A run is only
+# started if this fits in the job's remaining time.
 minutes() {
     case $1 in
-        cx81) echo ${MIN_CX81:-240} ;; cx62) echo ${MIN_CX62:-120} ;; cx61) echo ${MIN_CX61:-120} ;;
-        cx81s) echo ${MIN_CX81S:-60} ;; hewl) echo ${MIN_HEWL:-45} ;;
+        cx81) echo ${MIN_CX81:-240} ;; cx62) echo ${MIN_CX62:-75} ;; cx61) echo ${MIN_CX61:-40} ;;
+        cx81s) echo ${MIN_CX81S:-20} ;; hewl) echo ${MIN_HEWL:-20} ;;
     esac
 }
 order() { case $1 in cx81) echo 0 ;; cx62) echo 1 ;; cx61) echo 2 ;; cx81s) echo 3 ;; hewl) echo 4 ;; *) echo 9 ;; esac; }
