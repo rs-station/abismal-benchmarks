@@ -2,3 +2,5 @@ abismal/
 runs/
 env.sh
 __pycache__/
+smoke/
+setup.log

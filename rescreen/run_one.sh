@@ -16,6 +16,8 @@ set -u
 NAME=$1; SEED=$2; shift 2
 DS=${NAME%%_*}
 THREADS=${THREADS:-8}
+STAGE=${STAGE:-all}                     # all (train, then refine), train, or refine (an already-trained run)
+REFINE_PARALLEL=${REFINE_PARALLEL:-0}   # 1 refines the epochs concurrently, THREADS each
 export PYTHONPATH=$ABISMAL
 WORKER=$ABISMAL/abismal/callbacks/_torchref_worker.py
 D81=$DATA/cxidb_81; D61=$DATA/cxidb_61; D62=$DATA/cxidb_62
@@ -37,18 +39,27 @@ NAME=${NAME}_s$SEED
 RUN=$OUT/$NAME
 mkdir -p $RUN
 cd $OUT   # never run python from inside the abismal checkout: the cwd would shadow PYTHONPATH
-echo "$(date) start $NAME seed $SEED commit $(git -C $ABISMAL rev-parse --short HEAD) flags: $BASE $*" | tee -a $OUT/runs.log
-$PY -c 'import sys; from abismal.command_line.abismal import main; main(sys.argv[1:])' $IN -o $RUN $BASE "$@" --seed $SEED --verbosity 2 > $RUN.log 2>&1
-status=$?
-echo "$(date) trained $NAME exit $status" | tee -a $OUT/runs.log
-for e in 2 5 10 20; do
-    [ -f $RUN/asu_0_epoch_$e.mtz ] || continue
-    d=$RUN/torchref_0_asu_0_epoch_$e; mkdir -p $d
+status=0
+if [ $STAGE != refine ]; then
+    echo "$(date) start $NAME seed $SEED commit $(git -C $ABISMAL rev-parse --short HEAD) flags: $BASE $*" | tee -a $OUT/runs.log
+    $PY -c 'import sys; from abismal.command_line.abismal import main; main(sys.argv[1:])' $IN -o $RUN $BASE "$@" --seed $SEED --verbosity 2 > $RUN.log 2>&1
+    status=$?
+    echo "$(date) trained $NAME exit $status" | tee -a $OUT/runs.log
+fi
+[ $STAGE = train ] && exit $status
+refine() {
+    local e=$1 d=$RUN/torchref_0_asu_0_epoch_$1
+    mkdir -p $d
     (cd $d && CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=$THREADS MKL_NUM_THREADS=$THREADS TORCHREF_NUM_THREADS=$THREADS \
         $PY $WORKER --mtz $RUN/asu_0_epoch_$e.mtz --pdb $PDB --wavelength $WL --out-dir . --device cpu \
         --macro-cycles 5 --z-score-cutoff 5.0 --r-free-mtz $RF --adp-mode auto --adp-aniso-sigma auto \
         --rigid-body-iter 30 > stdout.txt 2> stderr.txt)
     echo "$(date) refined $NAME epoch $e exit $?" | tee -a $OUT/runs.log
+}
+for e in 2 5 10 20; do
+    [ -f $RUN/asu_0_epoch_$e.mtz ] || continue
+    if [ $REFINE_PARALLEL = 1 ]; then refine $e & else refine $e; fi
 done
+wait
 echo "$(date) done $NAME" | tee -a $OUT/runs.log
 exit $status
