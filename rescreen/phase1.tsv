@@ -1,0 +1,205 @@
+name	seed	flags
+cx81s_base	1	
+cx81s_base	2	
+cx81s_base	3	
+cx81s_nu4	1	--studentt-dof 4
+cx81s_nu4	2	--studentt-dof 4
+cx81s_nu4	3	--studentt-dof 4
+cx81s_nu8	1	--studentt-dof 8
+cx81s_nu8	2	--studentt-dof 8
+cx81s_nu8	3	--studentt-dof 8
+cx81s_nu16	1	--studentt-dof 16
+cx81s_nu16	2	--studentt-dof 16
+cx81s_nu16	3	--studentt-dof 16
+cx81s_nu64	1	--studentt-dof 64
+cx81s_nu64	2	--studentt-dof 64
+cx81s_nu64	3	--studentt-dof 64
+cx81s_normal	1	--studentt-dof none
+cx81s_normal	2	--studentt-dof none
+cx81s_normal	3	--studentt-dof none
+cx81s_ev11t	1	--error-model ev11 --error-model-a 20.72 --error-model-b 0.1969 --fix-error-model
+cx81s_ev11t	2	--error-model ev11 --error-model-a 20.72 --error-model-b 0.1969 --fix-error-model
+cx81s_ev11t	3	--error-model ev11 --error-model-a 20.72 --error-model-b 0.1969 --fix-error-model
+cx81s_ev11n	1	--error-model ev11 --error-model-a 20.72 --error-model-b 0.1969 --fix-error-model --studentt-dof none
+cx81s_ev11n	2	--error-model ev11 --error-model-a 20.72 --error-model-b 0.1969 --fix-error-model --studentt-dof none
+cx81s_ev11n	3	--error-model ev11 --error-model-a 20.72 --error-model-b 0.1969 --fix-error-model --studentt-dof none
+cx81s_relu128	1	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx81s_relu128	2	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx81s_relu128	3	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx81s_relu256	1	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx81s_relu256	2	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx81s_relu256	3	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx81s_swiglu64	1	--d-model 64
+cx81s_swiglu64	2	--d-model 64
+cx81s_swiglu64	3	--d-model 64
+cx81s_swiglu256	1	--d-model 256
+cx81s_swiglu256	2	--d-model 256
+cx81s_swiglu256	3	--d-model 256
+cx81s_depth3	1	--layers 3
+cx81s_depth3	2	--layers 3
+cx81s_depth3	3	--layers 3
+cx81s_depth10	1	--layers 10
+cx81s_depth10	2	--layers 10
+cx81s_depth10	3	--layers 10
+cx81s_noise0	1	--metadata-noise-factor 0
+cx81s_noise0	2	--metadata-noise-factor 0
+cx81s_noise0	3	--metadata-noise-factor 0
+cx81s_noise0.3	1	--metadata-noise-factor 0.3
+cx81s_noise0.3	2	--metadata-noise-factor 0.3
+cx81s_noise0.3	3	--metadata-noise-factor 0.3
+cx81s_nopostfeat	1	--no-posterior-features
+cx81s_nopostfeat	2	--no-posterior-features
+cx81s_nopostfeat	3	--no-posterior-features
+cx61_base	1	
+cx61_base	2	
+cx61_base	3	
+cx61_nu4	1	--studentt-dof 4
+cx61_nu4	2	--studentt-dof 4
+cx61_nu4	3	--studentt-dof 4
+cx61_nu8	1	--studentt-dof 8
+cx61_nu8	2	--studentt-dof 8
+cx61_nu8	3	--studentt-dof 8
+cx61_nu16	1	--studentt-dof 16
+cx61_nu16	2	--studentt-dof 16
+cx61_nu16	3	--studentt-dof 16
+cx61_nu64	1	--studentt-dof 64
+cx61_nu64	2	--studentt-dof 64
+cx61_nu64	3	--studentt-dof 64
+cx61_normal	1	--studentt-dof none
+cx61_normal	2	--studentt-dof none
+cx61_normal	3	--studentt-dof none
+cx61_ev11t	1	--error-model ev11 --error-model-a 1.812 --error-model-b 0.3045 --fix-error-model
+cx61_ev11t	2	--error-model ev11 --error-model-a 1.812 --error-model-b 0.3045 --fix-error-model
+cx61_ev11t	3	--error-model ev11 --error-model-a 1.812 --error-model-b 0.3045 --fix-error-model
+cx61_ev11n	1	--error-model ev11 --error-model-a 1.812 --error-model-b 0.3045 --fix-error-model --studentt-dof none
+cx61_ev11n	2	--error-model ev11 --error-model-a 1.812 --error-model-b 0.3045 --fix-error-model --studentt-dof none
+cx61_ev11n	3	--error-model ev11 --error-model-a 1.812 --error-model-b 0.3045 --fix-error-model --studentt-dof none
+cx61_relu128	1	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx61_relu128	2	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx61_relu128	3	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx61_relu256	1	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx61_relu256	2	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx61_relu256	3	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx61_swiglu64	1	--d-model 64
+cx61_swiglu64	2	--d-model 64
+cx61_swiglu64	3	--d-model 64
+cx61_swiglu256	1	--d-model 256
+cx61_swiglu256	2	--d-model 256
+cx61_swiglu256	3	--d-model 256
+cx61_depth3	1	--layers 3
+cx61_depth3	2	--layers 3
+cx61_depth3	3	--layers 3
+cx61_depth10	1	--layers 10
+cx61_depth10	2	--layers 10
+cx61_depth10	3	--layers 10
+cx61_noise0	1	--metadata-noise-factor 0
+cx61_noise0	2	--metadata-noise-factor 0
+cx61_noise0	3	--metadata-noise-factor 0
+cx61_noise0.3	1	--metadata-noise-factor 0.3
+cx61_noise0.3	2	--metadata-noise-factor 0.3
+cx61_noise0.3	3	--metadata-noise-factor 0.3
+cx61_nopostfeat	1	--no-posterior-features
+cx61_nopostfeat	2	--no-posterior-features
+cx61_nopostfeat	3	--no-posterior-features
+cx62_base	1	
+cx62_base	2	
+cx62_base	3	
+cx62_nu4	1	--studentt-dof 4
+cx62_nu4	2	--studentt-dof 4
+cx62_nu4	3	--studentt-dof 4
+cx62_nu8	1	--studentt-dof 8
+cx62_nu8	2	--studentt-dof 8
+cx62_nu8	3	--studentt-dof 8
+cx62_nu16	1	--studentt-dof 16
+cx62_nu16	2	--studentt-dof 16
+cx62_nu16	3	--studentt-dof 16
+cx62_nu64	1	--studentt-dof 64
+cx62_nu64	2	--studentt-dof 64
+cx62_nu64	3	--studentt-dof 64
+cx62_normal	1	--studentt-dof none
+cx62_normal	2	--studentt-dof none
+cx62_normal	3	--studentt-dof none
+cx62_ev11t	1	--error-model ev11 --error-model-a 2.821 --error-model-b 0.7809 --fix-error-model
+cx62_ev11t	2	--error-model ev11 --error-model-a 2.821 --error-model-b 0.7809 --fix-error-model
+cx62_ev11t	3	--error-model ev11 --error-model-a 2.821 --error-model-b 0.7809 --fix-error-model
+cx62_ev11n	1	--error-model ev11 --error-model-a 2.821 --error-model-b 0.7809 --fix-error-model --studentt-dof none
+cx62_ev11n	2	--error-model ev11 --error-model-a 2.821 --error-model-b 0.7809 --fix-error-model --studentt-dof none
+cx62_ev11n	3	--error-model ev11 --error-model-a 2.821 --error-model-b 0.7809 --fix-error-model --studentt-dof none
+cx62_relu128	1	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx62_relu128	2	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx62_relu128	3	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx62_relu256	1	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx62_relu256	2	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx62_relu256	3	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+cx62_swiglu64	1	--d-model 64
+cx62_swiglu64	2	--d-model 64
+cx62_swiglu64	3	--d-model 64
+cx62_swiglu256	1	--d-model 256
+cx62_swiglu256	2	--d-model 256
+cx62_swiglu256	3	--d-model 256
+cx62_depth3	1	--layers 3
+cx62_depth3	2	--layers 3
+cx62_depth3	3	--layers 3
+cx62_depth10	1	--layers 10
+cx62_depth10	2	--layers 10
+cx62_depth10	3	--layers 10
+cx62_noise0	1	--metadata-noise-factor 0
+cx62_noise0	2	--metadata-noise-factor 0
+cx62_noise0	3	--metadata-noise-factor 0
+cx62_noise0.3	1	--metadata-noise-factor 0.3
+cx62_noise0.3	2	--metadata-noise-factor 0.3
+cx62_noise0.3	3	--metadata-noise-factor 0.3
+cx62_nopostfeat	1	--no-posterior-features
+cx62_nopostfeat	2	--no-posterior-features
+cx62_nopostfeat	3	--no-posterior-features
+hewl_base	1	
+hewl_base	2	
+hewl_base	3	
+hewl_nu4	1	--studentt-dof 4
+hewl_nu4	2	--studentt-dof 4
+hewl_nu4	3	--studentt-dof 4
+hewl_nu8	1	--studentt-dof 8
+hewl_nu8	2	--studentt-dof 8
+hewl_nu8	3	--studentt-dof 8
+hewl_nu16	1	--studentt-dof 16
+hewl_nu16	2	--studentt-dof 16
+hewl_nu16	3	--studentt-dof 16
+hewl_nu64	1	--studentt-dof 64
+hewl_nu64	2	--studentt-dof 64
+hewl_nu64	3	--studentt-dof 64
+hewl_normal	1	--studentt-dof none
+hewl_normal	2	--studentt-dof none
+hewl_normal	3	--studentt-dof none
+hewl_ev11t	1	--error-model ev11 --error-model-a 0.994 --error-model-b 0.047 --fix-error-model
+hewl_ev11t	2	--error-model ev11 --error-model-a 0.994 --error-model-b 0.047 --fix-error-model
+hewl_ev11t	3	--error-model ev11 --error-model-a 0.994 --error-model-b 0.047 --fix-error-model
+hewl_ev11n	1	--error-model ev11 --error-model-a 0.994 --error-model-b 0.047 --fix-error-model --studentt-dof none
+hewl_ev11n	2	--error-model ev11 --error-model-a 0.994 --error-model-b 0.047 --fix-error-model --studentt-dof none
+hewl_ev11n	3	--error-model ev11 --error-model-a 0.994 --error-model-b 0.047 --fix-error-model --studentt-dof none
+hewl_relu128	1	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+hewl_relu128	2	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+hewl_relu128	3	--d-model 128 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+hewl_relu256	1	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+hewl_relu256	2	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+hewl_relu256	3	--d-model 256 --pre-activation relu --activation relu --no-gated --hidden-multiplier 2
+hewl_swiglu64	1	--d-model 64
+hewl_swiglu64	2	--d-model 64
+hewl_swiglu64	3	--d-model 64
+hewl_swiglu256	1	--d-model 256
+hewl_swiglu256	2	--d-model 256
+hewl_swiglu256	3	--d-model 256
+hewl_depth3	1	--layers 3
+hewl_depth3	2	--layers 3
+hewl_depth3	3	--layers 3
+hewl_depth10	1	--layers 10
+hewl_depth10	2	--layers 10
+hewl_depth10	3	--layers 10
+hewl_noise0	1	--metadata-noise-factor 0
+hewl_noise0	2	--metadata-noise-factor 0
+hewl_noise0	3	--metadata-noise-factor 0
+hewl_noise0.3	1	--metadata-noise-factor 0.3
+hewl_noise0.3	2	--metadata-noise-factor 0.3
+hewl_noise0.3	3	--metadata-noise-factor 0.3
+hewl_nopostfeat	1	--no-posterior-features
+hewl_nopostfeat	2	--no-posterior-features
+hewl_nopostfeat	3	--no-posterior-features
