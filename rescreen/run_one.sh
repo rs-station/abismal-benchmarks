@@ -30,7 +30,7 @@ case $DS in
            PDB=$DATA/hewl/reference_data/RTSAD_HEWL_refine_25.pdb; WL=1.892; RF=$DATA/hewl/reference_data/r-free-flags.mtz ;;
     cx61)  IN="--anomalous --dmin 1.5 --space-group P22121 $D61/reflection_data/all.stream"
            PDB=$D61/reference_data/5xfc_mr.pdb; WL=0.9539; RF=$D61/reference_data/r-free-flags.mtz ;;
-    cx62)  IN="--anomalous --dmin 1.5 --space-group P65 --reference-mtz $D62/reference_data/5xfd_phases.mtz $D62/reflection_data/all-amb.stream"
+    cx62)  IN="--anomalous --dmin 1.5 --space-group P65 --reference-mtz $D62/reference_data/5xfd_phases.mtz $D62/reflection_data/all-amb-scrambled-sigfix.stream"
            PDB=$D62/reference_data/5xfd.pdb; WL=0.9571; RF=$D62/reference_data/r-free-flags.mtz ;;
     *) echo "unknown dataset in $NAME"; exit 2 ;;
 esac

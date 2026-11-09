@@ -32,7 +32,7 @@ FILES="hewl/reflection_data/unmerged.mtz
 cxidb_81/reflection_data/figure7/r0011_t016_rg013_chunk000_reintegrated.expt
 cxidb_81/reflection_data/figure7/r0011_t016_rg013_chunk000_reintegrated.refl
 cxidb_61/reflection_data/all.stream
-cxidb_62/reflection_data/all-amb.stream
+cxidb_62/reflection_data/all-amb-scrambled-sigfix.stream
 hewl/reference_data/RTSAD_HEWL_refine_25.pdb hewl/reference_data/r-free-flags.mtz
 cxidb_81/reference_data/2tli.pdb cxidb_81/reference_data/r-free-flags.mtz
 cxidb_61/reference_data/5xfc_mr.pdb cxidb_61/reference_data/r-free-flags.mtz
@@ -42,7 +42,7 @@ if [ "$DATA" = "$BENCH/data" ]; then
     for pair in hewl:hewl/reflection_data/unmerged.mtz \
                 cxidb_81:cxidb_81/reflection_data/figure7/r0011_t016_rg013_chunk000_reintegrated.refl \
                 cxidb_61:cxidb_61/reflection_data/all.stream \
-                cxidb_62:cxidb_62/reflection_data/all-amb.stream; do
+                cxidb_62:cxidb_62/reflection_data/all-amb-scrambled-sigfix.stream; do
         ds=${pair%%:*}; f=${pair#*:}
         [ -e "$DATA/$f" ] || { echo "downloading $ds"; (bash "$DATA/$ds/download.sh"); }
     done

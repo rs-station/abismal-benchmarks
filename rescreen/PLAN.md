@@ -98,7 +98,7 @@ All under `$DATA`. `setup.sh` downloads anything missing and fails if any file b
 | cxidb_81 small (thermolysin, Zn) | `cx81s` | `cxidb_81/reflection_data/figure7/r0011_t016_rg013_chunk000_reintegrated.{expt,refl}`, dmin 1.8 | `cxidb_81/reference_data/2tli.pdb` | 1.2717 | `cxidb_81/reference_data/r-free-flags.mtz` |
 | cxidb_81 full | `cx81` | every `cxidb_81/reflection_data/figure7/*.{expt,refl}`, dmin 1.8 | as cx81s | 1.2717 | as cx81s |
 | cxidb_61 (SeMet, CrystFEL) | `cx61` | `cxidb_61/reflection_data/all.stream`, P22121, dmin 1.5 | `cxidb_61/reference_data/5xfc_mr.pdb` | 0.9539 | `cxidb_61/reference_data/r-free-flags.mtz` |
-| cxidb_62 (SeMet, CrystFEL, P65 ambiguity) | `cx62` | `cxidb_62/reflection_data/all-amb.stream`, P65, dmin 1.5, `--reference-mtz cxidb_62/reference_data/5xfd_phases.mtz` | `cxidb_62/reference_data/5xfd.pdb` (the deposited model, **not** `5xfd-mr.pdb`) | 0.9571 | `cxidb_62/reference_data/r-free-flags.mtz` |
+| cxidb_62 (SeMet, CrystFEL, P65 ambiguity) | `cx62` | `cxidb_62/reflection_data/all-amb-scrambled-sigfix.stream`, P65, dmin 1.5, `--reference-mtz cxidb_62/reference_data/5xfd_phases.mtz` | `cxidb_62/reference_data/5xfd.pdb` (the deposited model, **not** `5xfd-mr.pdb`) | 0.9571 | `cxidb_62/reference_data/r-free-flags.mtz` |
 
 **cxidb_81 wavelength.** The data were collected at 1.2717 Å, above the Zn K edge. Some older configs say 1.5418, which is wrong. The anomalous measures depend on the wavelength.
 
