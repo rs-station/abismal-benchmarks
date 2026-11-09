@@ -10,14 +10,22 @@ setting).
 
 A flipped crystal stays internally consistent: its reflections' Miller indices are reindexed; its reciprocal
 basis follows (a*' = b*, b*' = a*, c*' = -c*, so every reflection keeps its scattering vector); and its cell
-parameters swap a with b and alpha with beta. Everything else in the stream is copied byte for byte.
+parameters swap a with b and alpha with beta.
 
-usage: scramble_stream.py in.stream out.stream [--seed 2026] [--labels out.labels.csv]
+It also restores the photon-noise term of every reflection's sigma(I). The deposited stream was integrated with
+adu_per_eV = 0 (see https://cxidb.org/data/62/README.txt), so CrystFEL left that term out; the detector gain is 10
+counts per photon. sigma^2 becomes sigma^2 + gain * |I|, the form CrystFEL 0.6.1 gives on cxidb_61, whose gain was set
+(its sigma^2 rises by about 10 * |I| on both sides of zero). --photon-gain 0 leaves sigma(I) alone. Everything else in
+the stream is copied byte for byte.
+
+usage: scramble_stream.py in.stream out.stream [--seed 2026] [--labels out.labels.csv] [--photon-gain 10]
 Standard library only.
 """
 import argparse
 import csv
+import math
 import random
+import re
 import sys
 
 
@@ -30,7 +38,17 @@ def _fmt(name, v):
     return f"{name} = {v[0]:+.7f} {v[1]:+.7f} {v[2]:+.7f} nm^-1\n"
 
 
-def scramble(src, dst, labels, seed):
+def _restore_sigma(line, gain):
+    """Add gain * |I| to the variance of a reflection line, in place in the sigma(I) column."""
+    head, tail = line[:14], line[14:]  # "%4i %4i %4i" and the rest
+    m = re.match(r"(\s*)(\S+)(\s*)(\S+)(.*)", tail, re.S)
+    intensity, sigma = float(m.group(2)), float(m.group(4))
+    new = math.sqrt(sigma * sigma + gain * abs(intensity))
+    width = len(m.group(3)) + len(m.group(4))  # keep the column's width: the blanks before sigma(I) and its digits
+    return head + m.group(1) + m.group(2) + f"{new:{width}.2f}" + m.group(5)
+
+
+def scramble(src, dst, labels, seed, gain=10.0):
     rng = random.Random(seed)
     image = event = ""
     crystal = 0
@@ -52,6 +70,17 @@ def scramble(src, dst, labels, seed):
                 nflip += flip
             elif line.startswith("--- End crystal"):
                 flip = in_refl = False
+            elif line.startswith("Reflections measured after indexing"):
+                in_refl = True
+            elif line.startswith("End of reflections"):
+                in_refl = False
+            elif in_refl and not line.lstrip().startswith("h"):
+                if gain:
+                    line = _restore_sigma(line, gain)
+                if flip:
+                    # "%4i %4i %4i ..." : the indices are the first 14 characters.
+                    h, k, l = int(line[0:4]), int(line[5:9]), int(line[10:14])
+                    line = f"{k:4d} {h:4d} {-l:4d}" + line[14:]
             elif flip:
                 if line.startswith("Cell parameters"):
                     # Cell parameters a b c nm, al be ga deg
@@ -67,14 +96,6 @@ def scramble(src, dst, labels, seed):
                     line = _fmt("bstar", astar)
                 elif line.startswith("cstar ="):
                     line = _fmt("cstar", [-x for x in _vec(line)])
-                elif line.startswith("Reflections measured after indexing"):
-                    in_refl = True
-                elif line.startswith("End of reflections"):
-                    in_refl = False
-                elif in_refl and not line.lstrip().startswith("h"):
-                    # "%4i %4i %4i ..." : the indices are the first 14 characters.
-                    h, k, l = int(line[0:4]), int(line[5:9]), int(line[10:14])
-                    line = f"{k:4d} {h:4d} {-l:4d}" + line[14:]
             fout.write(line)
     return crystal, nflip
 
@@ -85,9 +106,10 @@ def main(argv=None):
     p.add_argument("dst")
     p.add_argument("--seed", type=int, default=2026)
     p.add_argument("--labels", default=None, help="sidecar CSV (default: dst with .labels.csv)")
+    p.add_argument("--photon-gain", type=float, default=10.0, help="counts per photon for restoring sigma(I); 0 leaves it alone")
     a = p.parse_args(argv)
     labels = a.labels or (a.dst[:-7] if a.dst.endswith(".stream") else a.dst) + ".labels.csv"
-    n, f = scramble(a.src, a.dst, labels, a.seed)
+    n, f = scramble(a.src, a.dst, labels, a.seed, a.photon_gain)
     print(f"{a.dst}: {f} of {n} crystals reindexed by (k, h, -l); labels in {labels}", file=sys.stderr)
 
 
