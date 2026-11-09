@@ -5,5 +5,7 @@ bunzip2 all-amb.stream.bz2
 
 # The deposited stream has nearly every crystal in one indexing setting already. For testing indexing-ambiguity
 # resolution, also write a copy with each crystal reindexed by the twin operator (h, k, l) -> (k, h, -l) with
-# probability 1/2 (fixed seed), and which ones were flipped (all-amb-scrambled.labels.csv).
-python $ABISMAL_BENCHMARKS/data/cxidb_62/scramble_stream.py all-amb.stream all-amb-scrambled.stream --seed 2026
+# probability 1/2 (fixed seed), and which ones were flipped (all-amb-scrambled-sigfix.labels.csv). The same step restores
+# the photon-noise term of sigma(I), missing because the deposited stream was integrated with adu_per_eV = 0 (see
+# https://cxidb.org/data/62/README.txt). This is the version to use for every test.
+python $ABISMAL_BENCHMARKS/data/cxidb_62/scramble_stream.py all-amb.stream all-amb-scrambled-sigfix.stream --seed 2026

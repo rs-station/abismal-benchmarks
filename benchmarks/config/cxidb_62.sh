@@ -1,6 +1,6 @@
 BENCHMARKNAME=cxidb_62
 INPUTS=(
-    $ABISMAL_BENCHMARKS/data/cxidb_62/reflection_data/all-amb.stream
+    $ABISMAL_BENCHMARKS/data/cxidb_62/reflection_data/all-amb-scrambled-sigfix.stream
 )
 REFERENCE_MTZ=$ABISMAL_BENCHMARKS/data/cxidb_62/reference_data/5xfd_phases.mtz
 
